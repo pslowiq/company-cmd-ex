@@ -1,0 +1,71 @@
+<.header>
+  Company <%= @company.id %>
+  <:subtitle>This is a company record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/companies/#{@company}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit company</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @company.name %></:item>
+  <:item title="Address"><%= @company.address %></:item>
+  <:item title="Contact info"><%= @company.contact_info %></:item>
+  <:item title="Domain"><%= @company.domain %></:item>
+  <:item title="Details">
+    <%= for {detail_name, detail_value} <- Map.to_list(@company.details) do %>
+      <div><%= detail_name %>: <%= detail_value %></div>
+    <% end %>
+  </:item>
+</.list>
+
+<.header class="pt-8">
+  Tasks
+  <:actions>
+    <.link patch={~p"/companies/#{@company}/new_company_task"} phx-click={JS.push_focus()}>
+      <.button>New task</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="tasks"
+  rows={@streams.tasks}
+  row_click={fn {_id, task} -> JS.navigate(~p"/tasks/#{task}") end}
+>
+  <:col :let={{id, task}} label="Name"><%= task.name %></:col>
+  <:col :let={{id, task}} label="Description"><%= task.description %></:col>
+  <:col :let={{id, task}} label="Finished"><%= task.finished %></:col>
+  <:col :let={{id, task}} label="Assigned users">
+    <%= for user <- task.users do %>
+      <div><%= user.email %></div>
+    <% end %>
+  </:col>
+</.table>
+
+<.back navigate={~p"/companies"}>Back to companies</.back>
+
+<.modal :if={@live_action == :edit} id="company-modal" show on_cancel={JS.patch(~p"/companies/#{@company}")}>
+  <.live_component
+    module={CompanyCommanderWeb.CompanyLive.FormComponent}
+    id={@company.id}
+    title={@page_title}
+    current_user={@current_user}
+    action={@live_action}
+    company={@company}
+    patch={~p"/companies/#{@company}"}
+  />
+</.modal>
+
+<.modal :if={@live_action == :new_company_task} id="task-modal" show on_cancel={JS.patch(~p"/companies/#{@company}")}>
+  <.live_component
+    module={CompanyCommanderWeb.TaskLive.FormComponent}
+    id="new"
+    title="New Task"
+    current_user={@current_user}
+    company={@company}
+    action={:new_company_task}
+    patch={~p"/companies/#{@company}"}
+  />
+</.modal>
