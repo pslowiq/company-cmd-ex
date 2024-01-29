@@ -1,6 +1,10 @@
 defmodule CompanyCommanderWeb.Router do
   use CompanyCommanderWeb, :router
 
+  defmacro mounter do
+
+  end
+
   import CompanyCommanderWeb.UserAuth
 
   pipeline :browser do
@@ -26,15 +30,14 @@ defmodule CompanyCommanderWeb.Router do
   scope "/", CompanyCommanderWeb do
     pipe_through :browser
 
-    live_session :jazda_z_kurwami,
+    live_session :companies_session,
       on_mount: [{CompanyCommanderWeb.UserAuth, :ensure_authenticated}] do
       live "/companies", CompanyLive.Index, :index
       live "/companies/new", CompanyLive.Index, :new
-      live "/companies/:id/edit", CompanyLive.Index, :edit
-
-      live "/companies/:id", CompanyLive.Show, :show
-      live "/companies/:id/show/edit", CompanyLive.Show, :edit
-      live "/companies/:id/new_company_task", CompanyLive.Show, :new_company_task
+      live "/companies/:company_id/edit", CompanyLive.Index, :edit
+      live "/companies/:company_id", CompanyLive.Show, :show
+      live "/companies/:company_id/show/edit", CompanyLive.Show, :edit
+      live "/companies/:company_id/new_company_task", CompanyLive.Show, :new_company_task
 
       live "/tasks", TaskLive.Index, :index
       live "/tasks/new", TaskLive.Index, :new
@@ -42,7 +45,8 @@ defmodule CompanyCommanderWeb.Router do
 
       live "/tasks/:id", TaskLive.Show, :show
       live "/tasks/:id/show/edit", TaskLive.Show, :edit
-      end
+    end
+
   end
 
   # Other scopes may use custom stacks.

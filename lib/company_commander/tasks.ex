@@ -145,6 +145,27 @@ defmodule CompanyCommander.Tasks do
   """
   def get_task_user!(id), do: Repo.get!(TaskUser, id)
 
+  def get_task_users(task_id) do
+    query = from(tu in TaskUser,
+      where: tu.task_id == ^task_id,
+      select: tu)
+    query
+    |> Repo.all()
+  end
+
+  def auth_user_for_task(task_id, user_id) do
+    query = from(tu in TaskUser,
+      where: tu.task_id == ^task_id and tu.user_id == ^user_id,
+      select: tu)
+    result = query
+    |> Repo.one()
+
+    case result do
+      {:error, _} -> false
+      %TaskUser{} -> true
+    end
+  end
+
   @doc """
   Creates a task_user.
 

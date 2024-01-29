@@ -140,6 +140,19 @@ defmodule CompanyCommander.Companies do
 
   """
   def get_company_user!(id), do: Repo.get!(CompanyUser, id)
+  def get_company_user(company_id, user_id) do
+    query = from(cu in CompanyUser,
+      where: cu.company_id == ^company_id and cu.user_id == ^user_id,
+      select: cu)
+    query
+    |> Repo.one()
+  end
+  def auth_company_for_user(company_id, user_id) do
+    case get_company_user(company_id, user_id) do
+      %CompanyUser{} -> true
+      nil -> false
+    end
+  end
 
   @doc """
   Creates a company_user.
@@ -205,6 +218,7 @@ defmodule CompanyCommander.Companies do
   def change_company_user(%CompanyUser{} = company_user, attrs \\ %{}) do
     CompanyUser.changeset(company_user, attrs)
   end
+
 
   def get_companies_for_user(user_id) do
     query = from(c in Company,

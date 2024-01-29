@@ -59,7 +59,8 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
   defp save_company(socket, :edit, company_params) do
     case Companies.update_company(socket.assigns.company, company_params) do
       {:ok, company} ->
-        notify_parent({:saved, company})
+        #notify_parent({:saved, company})
+        Phoenix.PubSub.broadcast(CompanyCommander.PubSub, "companies", {:saved, company})
 
         {:noreply,
          socket
@@ -74,7 +75,7 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
   defp save_company(socket, :new, company_params) do
     case Companies.create_company(company_params) do
       {:ok, company} ->
-        notify_parent({:saved, company})
+        Phoenix.PubSub.broadcast(CompanyCommander.PubSub, "companies", {:saved, company})
         user = socket.assigns.current_user
         {:ok, _} = Companies.create_company_user(%{"company_id" => company.id, "user_id" => user.id})
 

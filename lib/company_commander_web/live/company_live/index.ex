@@ -6,6 +6,8 @@ defmodule CompanyCommanderWeb.CompanyLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    Phoenix.PubSub.subscribe(CompanyCommander.PubSub, "companies")
+
     {:ok,
       socket
       |> assign(
@@ -37,8 +39,14 @@ defmodule CompanyCommanderWeb.CompanyLive.Index do
   end
 
   @impl true
-  def handle_info({CompanyCommanderWeb.CompanyLive.FormComponent, {:saved, company}}, socket) do
-    {:noreply, stream_insert(socket, :companies, company)}
+  def handle_info({:saved, company}, socket) do
+    # check if current_user belongs to company
+    case Companies.get_company_user(company.id, socket.assigns.current_user.id) do
+      nil ->
+        {:noreply, socket}
+      %CompanyCommander.Companies.CompanyUser{} ->
+        {:noreply, stream_insert(socket, :companies, company)}
+    end
   end
 
   @impl true

@@ -32,7 +32,7 @@ The CompanyCommander CRM system is designed to centralize and streamline the man
 - **Task:** Information about tasks within the system, including status, assignment, and completion details.
 - **TaskLog:** A log of all tasks within the system.
 
-### Models refences
+### Models references
 
 - **User:**
   - **Company:** A user belongs to a company.

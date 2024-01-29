@@ -17,8 +17,8 @@ defmodule CompanyCommanderWeb.CompanyLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
-    with company <- Companies.get_company!(id),
+  def handle_params(%{"company_id" => company_id}, _, socket) do
+    with company <- Companies.get_company!(company_id),
           tasks <- Tasks.get_tasks_for_company(company.id) do
         {:noreply,
           socket
