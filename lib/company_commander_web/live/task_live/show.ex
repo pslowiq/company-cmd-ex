@@ -4,7 +4,6 @@ defmodule CompanyCommanderWeb.TaskLive.Show do
 
   alias CompanyCommander.Tasks
   alias CompanyCommander.Tasks.TimeLog
-  alias Phoenix.LiveView.Components.MultiSelect.Option
 
   @impl true
   def mount(_params, _session, socket) do

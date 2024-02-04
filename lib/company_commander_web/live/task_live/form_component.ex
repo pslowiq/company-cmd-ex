@@ -1,13 +1,8 @@
 defmodule CompanyCommanderWeb.TaskLive.FormComponent do
 
   use CompanyCommanderWeb, :live_component
-  use Phoenix.LiveComponent
 
   alias CompanyCommander.Tasks
-  alias CompanyCommander.Companies
-  alias Phoenix.LiveView.Components.MultiSelect
-
-  @multi_id "multi-select-component"
 
   @impl true
   def render(assigns) do
@@ -120,12 +115,6 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
-  end
-
-  defp update_selected(socket, assigns, selected) do
-    socket
-    |> assign(assigns)
-    |> assign(:selected_users, selected)
   end
 
 end

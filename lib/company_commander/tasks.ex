@@ -336,6 +336,7 @@
   """
   def get_time_log!(id), do: Repo.get!(TimeLog, id)
 
+
   @doc """
   Creates a time_log.
 
@@ -445,7 +446,7 @@
   end
 
   def make_user_options_for_task(task_id) do
-    company_id = Task.get_task!(task_id).company_id
+    company_id = get_task!(task_id).company_id
     company_users = Companies.get_users_for_company(company_id)
     task_users = get_task_users(task_id)
     Enum.map(company_users, fn user ->
@@ -469,12 +470,10 @@
     |> Enum.map(fn tu -> tu.user_id end)
     company_users = Companies.get_users_for_company(company_id)
 
-    ret = Enum.map(company_users, fn user ->
+    Enum.map(company_users, fn user ->
       selected = user.id in current_task_users_ids
       %{id: user.id, label: user.name, selected: selected}
     end)
-    IO.inspect(ret)
-    ret
   end
 
 end

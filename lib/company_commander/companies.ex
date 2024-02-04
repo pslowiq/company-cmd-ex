@@ -9,7 +9,6 @@ defmodule CompanyCommander.Companies do
 
   alias CompanyCommander.Companies.Company
   alias CompanyCommander.Accounts.User
-  alias Phoenix.LiveView.Components.MultiSelect
   alias CompanyCommander.Companies.CompanyUser
 
   @doc """
@@ -260,13 +259,18 @@ defmodule CompanyCommander.Companies do
 
 
   def get_companies_for_user(user_id) do
-    query = from(c in Company,
-      join: cu in CompanyUser, on: cu.company_id == c.id,
-      where: cu.user_id == ^user_id,
-      select: c)
+    user = Accounts.get_user!(user_id)
+    if user.role == "admin" do
+      list_companies()
+    else
+      query = from(c in Company,
+        join: cu in CompanyUser, on: cu.company_id == c.id,
+        where: cu.user_id == ^user_id,
+        select: c)
 
-    query
-    |> Repo.all()
+      query
+      |> Repo.all()
+    end
   end
 
   def get_users_for_company(company_id) do

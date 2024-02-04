@@ -123,19 +123,19 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
 
   ## Metadata with all CSS attributes for the MultiSelect component
   @css %{
-    component:        @class_prefix <> " h-12 flex flex-col w-96 py-[7px] gap-1 relative sm:text-sm",
+    component:        @class_prefix <> " h-12 flex flex-col w-96 py-[7px] gap-1 relative sm:text-base",
     main:             "p-2 flex w-full gap-1 min-h-fit border rounded-t-lg rounded-b-lg",
     tags:             "flex flex-wrap gap-1 w-full",
     placeholder:      "select-none opacity-50 self-center",
     tag:              "bg-primary-600 rounded-md p-1 gap-1 select-none text-white flex place-items-center",
     main_icons:       "right-2 self-center py-1 pl-1 z-10 flex place-items-center",
     body:             "-mt-[4px] w-96 p-2 ml-0 z-5 outline-none flex flex-col border-x border-b rounded-b-lg shadow-md" <> (@use_alpinejs && "" || " hidden"),
-    filter:           "mb-2 block w-full pl-2 pr-12 rounded-lg focus:outline-none focus:ring-1 sm:text-sm sm:leading-6 phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
+    filter:           "mb-2 block w-full pl-2 pr-12 rounded-lg focus:outline-none focus:ring-1 sm:text-base sm:leading-6 phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
     filter_icons:     "absolute inset-y-0 right-2 flex items-center" <> (@use_alpinejs && " mb-2" || ""),
     icon_color:       "fill-zinc-400 hover:fill-zinc-500",
     icon_check_color: "fill-zinc-400 hover:fill-zinc-500 | fill-primary-600 hover:fill-primary-700", # Two sets of colors `on|off`
     options:          "overflow-auto max-h-48 pt-1 pl-1 scrollbar scrollbar-thumb-zinc-400 scrollbar-track-zinc-200 dark:scrollbar-thumb-gray-700 dark:scrollbar-track-gray-900",
-    option_label:     "flex text-sm font-medium text-gray-900 dark:text-gray-300 place-items-center",
+    option_label:     "flex text-base font-medium text-gray-900 dark:text-gray-300 place-items-center",
     option_input:     "rounded w-4 h-4 mr-2 dark:checked:bg-primary-500 border border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-1 dark:bg-gray-700 dark:border-gray-600 transition duration-200",
     colors:           "bg-white border-gray-300 dark:border-gray-600 disabled:bg-gray-100 disabled:cursor-not-allowed shadow-sm dark:bg-gray-800 dark:text-gray-300 dark:disabled:bg-gray-700",
   }

@@ -149,41 +149,62 @@ defmodule CompanyCommanderWeb.UserAuth do
     {:cont, mount_current_user(socket, session)}
   end
 
-  def on_mount(:ensure_authenticated, %{"task_id" => task_id} = params, session, socket) do
-    case on_mount(:ensure_authenticated, Map.delete(params, "task_id"), session, socket) do
-      {:cont, socket} ->
+  def on_mount(:ensure_authenticated, %{"task_id" => task_id} = _params, session, socket) do
+    socket = mount_current_user(socket, session)
+    if not is_nil(socket.assigns.current_user) and socket.assigns.current_user.role == "admin" do
+      {:cont, socket}
+    else
+      if socket.assigns.current_user do
         if Tasks.auth_user_for_task(task_id, socket.assigns.current_user.id) do
           {:cont, socket}
         else
-          {:halt,
-          socket
-          |> Phoenix.LiveView.put_flash(:error, "You must be authorized access this task.")
-          |> Phoenix.LiveView.redirect(to: ~p"/")}
-        end
+          socket =
+            socket
+            |> Phoenix.LiveView.put_flash(:error, "You must be authenticated for this task to access this page.")
+            |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
-      {:halt, socket} -> {:halt, socket}
+          {:halt, socket}
+        end
+      else
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(:error, "You must be authenticated logged in to access this page.")
+          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+        {:halt, socket}
+      end
     end
   end
 
-  def on_mount(:ensure_authenticated, %{"company_id" => company_id} = params, session, socket) do
-    case on_mount(:ensure_authenticated, Map.delete(params, "company_id"), session, socket) do
-      {:cont, socket} ->
+  def on_mount(:ensure_authenticated, %{"company_id" => company_id} = _params, session, socket) do
+    socket = mount_current_user(socket, session)
+    if not is_nil(socket.assigns.current_user) and socket.assigns.current_user.role == "admin" do
+      {:cont, socket}
+    else
+      if socket.assigns.current_user do
         if Companies.auth_company_for_user(company_id, socket.assigns.current_user.id) do
           {:cont, socket}
         else
-          {:halt,
-          socket
-          |> Phoenix.LiveView.put_flash(:error, "You must be authorized access this company.")
-          |> Phoenix.LiveView.redirect(to: ~p"/")}
-        end
+          socket =
+            socket
+            |> Phoenix.LiveView.put_flash(:error, "You must be authenticated for this company to this page.")
+            |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
 
-      {:halt, socket} -> {:halt, socket}
+          {:halt, socket}
+        end
+      else
+        socket =
+          socket
+          |> Phoenix.LiveView.put_flash(:error, "You must be authenticated logged in to access this page.")
+          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")
+
+        {:halt, socket}
+      end
     end
   end
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
-    IO.inspect(session["history"])
     if socket.assigns.current_user do
       {:cont, socket}
     else

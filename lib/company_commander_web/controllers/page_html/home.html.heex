@@ -41,9 +41,9 @@
 <div class="px-4 py-10 sm:px-6 sm:py-28 lg:px-8 xl:px-28 xl:py-32">
   <div class="mx-auto max-w-xl lg:mx-0">
     <img src={~p"/images/logo.svg"} width="100" />
-    <h1 class="text-brand mt-10 flex items-center text-sm font-semibold leading-6">
+    <h1 class="text-brand mt-10 flex items-center text-base font-semibold leading-6">
       Company Commander
-      <small class="bg-brand/5 text-[0.8125rem] ml-3 rounded-full px-2 font-medium leading-6">
+      <small class="bg-brand/5 text-base ml-3 rounded-full px-2 font-medium leading-6">
         v<%= Application.spec(:company_commander, :vsn) %>
       </small>
     </h1>
@@ -58,26 +58,26 @@
       <%= if @current_user do %>
         <.link
           href={~p"/companies"}
-          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
+          class="text-base leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
         >
           Companies
         </.link>
         <.link
           href={~p"/linkedin_automation"}
-          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
+          class="text-base leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
         >
           Linkedin Automation
         </.link>
       <% else %>
         <.link
           href={~p"/users/register"}
-          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
+          class="text-base leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
         >
           Register
         </.link>
         <.link
           href={~p"/users/log_in"}
-          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
+          class="text-base leading-6 text-zinc-900 font-semibold px-4 py-2 border rounded-3xl hover:text-white hover:bg-brand"
         >
           Log in
         </.link>

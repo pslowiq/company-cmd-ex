@@ -43,21 +43,21 @@ defmodule CompanyCommander.LinkedinDog do
   @impl true
   def handle_cast({:login, username, password}, {:started, state}) do
     login(username, password)
-    {:reply, {:ok, "Logged in"}, {:started, state}}
+    {:noreply, {:started, state}}
   end
 
   #todo: implement this
   @impl true
   def handle_cast({:send_message, message, to}, {:started, state}) do
     Logger.debug("Sending message: #{message} #{to}")
-    {:reply, {:ok, "Message sent"}, {:started, state}}
+    {:noreply, {:started, state}}
   end
 
   #todo: implement this
   @impl true
   def handle_call({:scrape_search, sn_url}, _from, {:started, state}) do
     Logger.debug("Scraping search: #{sn_url}")
-    {:reply, {:ok, "Scraped search"}, {:started, state}}
+    {:noreply, {:started, state}}
   end
 
   defp start_chromedriver(port \\ @default_port) do
@@ -100,7 +100,7 @@ defmodule CompanyCommander.LinkedinDog do
   end
 
   @impl true
-  def terminate(reason, {_status, state}) do
+  def terminate(reason, {_status, _state}) do
     Logger.debug("Terminating, reason: #{inspect(reason)}")
     Hound.end_session
     :ok

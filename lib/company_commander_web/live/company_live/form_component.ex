@@ -54,10 +54,10 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
   end
 
   @impl true
-  def update(%{selected_users: selected_users} = assigns, socket) do
+  def update(%{selected_users: selected_users}, socket) do
     {:ok,
      socket
-     |> assign(:selected_users, assigns.selected_users)}
+     |> assign(:selected_users, selected_users)}
   end
 
   @impl true
@@ -95,8 +95,7 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
     case Companies.create_company(company_params) do
       {:ok, company} ->
         Phoenix.PubSub.broadcast(CompanyCommander.PubSub, "companies", {:saved, company})
-        user = socket.assigns.current_user
-        {:ok, _} = Companies.create_company_user(%{"company_id" => company.id, "user_id" => user.id})
+
 
         {:noreply,
          socket
