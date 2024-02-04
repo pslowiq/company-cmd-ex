@@ -13,8 +13,31 @@
   <:item title="Finished"><%= @task.finished %></:item>
   <:item title="Description"><%= @task.description %></:item>
 </.list>
+<.header class="pt-8">
+  Time Logs
+  <:actions>
+      <%= if @current_user_tracks_time do %>
+        <.button_stop phx-click="time_tracking">
+          Stop time tracking
+        </.button_stop>
+      <% else %>
+        <.button_start phx-click="time_tracking">
+          Start time tracking
+        </.button_start>
+      <% end %>
+  </:actions>
+</.header>
+<.table
+  id="time_logs"
+  rows={@streams.time_logs}
+  row_click={fn {id, time_log} -> JS.navigate(~p"/tasks/#{time_log.task_id}/show/edit/#{time_log.id}") end}
+>
+  <:col :let={{_id, time_log}} label="User"><%= time_log.user_id %></:col>
+  <:col :let={{_id, time_log}} label="Start Time"><%= time_log.start_time %></:col>
+  <:col :let={{_id, time_log}} label="End Time"><%= time_log.end_time %></:col>
+</.table>
 
-<.back navigate={~p"/companies/#{@task.company_id}"}>Back to company</.back>
+<.back navigate={~p"/companies/#{@task.company_id}"}>Back to <%= @company.name %> </.back>
 <.back navigate={~p"/tasks"}>Back to tasks</.back>
 
 <.modal :if={@live_action == :edit} id="task-modal" show on_cancel={JS.patch(~p"/tasks/#{@task}")}>
@@ -24,6 +47,22 @@
     title={@page_title}
     action={@live_action}
     task={@task}
+    company={@company}
+    selected_users={@user_options}
     patch={~p"/tasks/#{@task}"}
   />
 </.modal>
+
+<.modal :if={@live_action == :edit_time_log} id="task-modal" show on_cancel={JS.patch(~p"/tasks/#{@task}")}>
+  <.live_component
+    module={CompanyCommanderWeb.TimeLogLive.FormComponent}
+    id={@task.id}
+    title={@page_title}
+    action={@live_action}
+    task={@task}
+    time_log={@time_log}
+    company={@company}
+    patch={~p"/tasks/#{@task}"}
+  />
+</.modal>
+

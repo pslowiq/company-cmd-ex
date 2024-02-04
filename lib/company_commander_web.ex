@@ -82,6 +82,7 @@ defmodule CompanyCommanderWeb do
   defp html_helpers do
     quote do
       # HTML escaping functionality
+      import Phoenix.LiveView.Components.MultiSelect
       import Phoenix.HTML
       # Core UI components and translation
       import CompanyCommanderWeb.CoreComponents

@@ -6,6 +6,7 @@ defmodule CompanyCommanderWeb.UserAuth do
 
   alias CompanyCommander.Accounts
   alias CompanyCommander.Companies
+  alias CompanyCommander.Tasks
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -149,15 +150,15 @@ defmodule CompanyCommanderWeb.UserAuth do
   end
 
   def on_mount(:ensure_authenticated, %{"task_id" => task_id} = params, session, socket) do
-    case on_mount(:ensure_authenticated, Map.delete(params, "company_id"), session, socket) do
+    case on_mount(:ensure_authenticated, Map.delete(params, "task_id"), session, socket) do
       {:cont, socket} ->
-        if Tasks.auth_task_for_user(task_id, socket.assigns.current_user.id) do
+        if Tasks.auth_user_for_task(task_id, socket.assigns.current_user.id) do
           {:cont, socket}
         else
           {:halt,
           socket
-          |> Phoenix.LiveView.put_flash(:error, "You must be authenticated access this company.")
-          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")}
+          |> Phoenix.LiveView.put_flash(:error, "You must be authorized access this task.")
+          |> Phoenix.LiveView.redirect(to: ~p"/")}
         end
 
       {:halt, socket} -> {:halt, socket}
@@ -172,8 +173,8 @@ defmodule CompanyCommanderWeb.UserAuth do
         else
           {:halt,
           socket
-          |> Phoenix.LiveView.put_flash(:error, "You must be authenticated access this company.")
-          |> Phoenix.LiveView.redirect(to: ~p"/users/log_in")}
+          |> Phoenix.LiveView.put_flash(:error, "You must be authorized access this company.")
+          |> Phoenix.LiveView.redirect(to: ~p"/")}
         end
 
       {:halt, socket} -> {:halt, socket}
@@ -182,7 +183,7 @@ defmodule CompanyCommanderWeb.UserAuth do
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
     socket = mount_current_user(socket, session)
-
+    IO.inspect(session["history"])
     if socket.assigns.current_user do
       {:cont, socket}
     else

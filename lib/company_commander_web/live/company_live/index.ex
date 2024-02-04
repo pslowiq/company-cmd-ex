@@ -20,15 +20,17 @@ defmodule CompanyCommanderWeb.CompanyLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
+  defp apply_action(socket, :edit, %{"company_id" => id}) do
     socket
     |> assign(:page_title, "Edit Company")
+    |> assign(:company_user_options, Companies.make_user_options_for_company(id))
     |> assign(:company, Companies.get_company!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Company")
+    |> assign(:company_user_options, Companies.make_user_options_for_new_company())
     |> assign(:company, %Company{})
   end
 
@@ -40,7 +42,6 @@ defmodule CompanyCommanderWeb.CompanyLive.Index do
 
   @impl true
   def handle_info({:saved, company}, socket) do
-    # check if current_user belongs to company
     case Companies.get_company_user(company.id, socket.assigns.current_user.id) do
       nil ->
         {:noreply, socket}

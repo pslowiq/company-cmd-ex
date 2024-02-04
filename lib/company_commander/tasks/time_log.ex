@@ -3,8 +3,8 @@ defmodule CompanyCommander.Tasks.TimeLog do
   import Ecto.Changeset
 
   schema "time_logs" do
-    field :start_time, :naive_datetime
-    field :end_time, :naive_datetime
+    field :start_time, :utc_datetime
+    field :end_time, :utc_datetime
     field :task_id, :id
     field :user_id, :id
 
@@ -14,7 +14,7 @@ defmodule CompanyCommander.Tasks.TimeLog do
   @doc false
   def changeset(time_log, attrs) do
     time_log
-    |> cast(attrs, [:start_time, :end_time])
-    |> validate_required([:task_id, :user_id, :start_time, :end_time])
+    |> cast(attrs, [:user_id, :task_id, :start_time, :end_time])
+    |> validate_required([:user_id, :task_id, :start_time])
   end
 end

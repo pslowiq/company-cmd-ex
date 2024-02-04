@@ -361,4 +361,10 @@ defmodule CompanyCommander.Accounts do
     Bcrypt.verify_pass(password, hashed_password)
   end
 
+  def list_users do
+    query = from(u in User, select: u)
+    query
+    |> Repo.all()
+  end
+
 end

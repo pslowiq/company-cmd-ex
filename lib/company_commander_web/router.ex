@@ -15,6 +15,7 @@ defmodule CompanyCommanderWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug CompanyCommanderWeb.Plugs.NavigationHistory
   end
 
   pipeline :api do
@@ -40,11 +41,12 @@ defmodule CompanyCommanderWeb.Router do
       live "/companies/:company_id/new_company_task", CompanyLive.Show, :new_company_task
 
       live "/tasks", TaskLive.Index, :index
-      live "/tasks/new", TaskLive.Index, :new
-      live "/tasks/:id/edit", TaskLive.Index, :edit
 
-      live "/tasks/:id", TaskLive.Show, :show
-      live "/tasks/:id/show/edit", TaskLive.Show, :edit
+      live "/tasks/:task_id", TaskLive.Show, :show
+      live "/tasks/:task_id/show/edit", TaskLive.Show, :edit
+      live "/tasks/:task_id/show/edit/:time_log_id", TaskLive.Show, :edit_time_log
+
+      live "/linkedin_automation", AutomationLive.LinkedinAutomationLive
     end
 
   end

@@ -241,6 +241,48 @@ defmodule CompanyCommanderWeb.CoreComponents do
     """
   end
 
+  attr :type, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  slot :inner_block, required: true
+  def button_start(assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg bg-green-900 hover:bg-green-700 py-2 px-3",
+        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
+  attr :type, :string, default: nil
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  slot :inner_block, required: true
+  def button_stop(assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg bg-red-900 hover:bg-red-700 py-2 px-3",
+        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
+    """
+  end
+
   @doc """
   Renders an input with label and error messages.
 
@@ -438,6 +480,18 @@ defmodule CompanyCommanderWeb.CoreComponents do
       </div>
       <div class="flex-none"><%= render_slot(@actions) %></div>
     </header>
+    """
+  end
+
+  def sidebar(assigns) do
+    ~H"""
+    <aside class="sm:block">
+      <div class="py-6 px-3 space-y-1">
+        <div>
+          <h1> Gowno </h1>
+        </div>
+      </div>
+    </aside>
     """
   end
 

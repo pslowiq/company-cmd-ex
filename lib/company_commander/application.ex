@@ -17,7 +17,7 @@ defmodule CompanyCommander.Application do
       # Start a worker by calling: CompanyCommander.Worker.start_link(arg)
       # {CompanyCommander.Worker, arg},
       # Start to serve requests, typically the last entry
-      CompanyCommanderWeb.Endpoint
+      CompanyCommanderWeb.Endpoint,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

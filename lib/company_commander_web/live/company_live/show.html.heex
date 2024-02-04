@@ -54,6 +54,7 @@
     current_user={@current_user}
     action={@live_action}
     company={@company}
+    selected_users={@company_user_options}
     patch={~p"/companies/#{@company}"}
   />
 </.modal>
@@ -65,7 +66,9 @@
     title="New Task"
     current_user={@current_user}
     company={@company}
+    task={%Task{company_id: @company.id}}
     action={:new_company_task}
+    selected_users={@task_user_options}
     patch={~p"/companies/#{@company}"}
   />
 </.modal>

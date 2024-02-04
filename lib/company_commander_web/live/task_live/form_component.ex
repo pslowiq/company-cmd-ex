@@ -1,7 +1,13 @@
 defmodule CompanyCommanderWeb.TaskLive.FormComponent do
+
   use CompanyCommanderWeb, :live_component
+  use Phoenix.LiveComponent
 
   alias CompanyCommander.Tasks
+  alias CompanyCommander.Companies
+  alias Phoenix.LiveView.Components.MultiSelect
+
+  @multi_id "multi-select-component"
 
   @impl true
   def render(assigns) do
@@ -14,30 +20,31 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
 
       <.simple_form
         for={@form}
-        id="company-form"
+        id="task-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
       >
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:description]} type="text" label="Description" />
+        <.input field={@form[:description]} type="textarea" label="Description" />
         <.input field={@form[:finished]} type="checkbox" label="Is finished?" />
-        <.input field={@form[:company_id]} type="number" label="Company Id"/>
-
+        <.input field={@form[:company_id]} type="hidden"/>
         <:actions>
           <.button phx-disable-with="Saving...">Save Task</.button>
         </:actions>
-
+        <.multi_select
+          id="multi-select-component"
+          form={@form}
+          on_change= {fn selected -> send_update(self(), @myself, %{selected_users: selected}) end}
+          wrap={false}
+          placeholder="Select users..."
+          title="Select tipics to filter quotes"
+          options={@selected_users}
+          class="w-full"
+        />
       </.simple_form>
     </div>
     """
-  end
-
-  @impl true
-  def mount(socket) do
-    {:ok,
-     socket
-     |> assign(:task, %Tasks.Task{})}
   end
 
   @impl true
@@ -46,16 +53,25 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:selected_users, assigns.selected_users)
      |> assign_form(changeset)}
   end
 
   @impl true
-  def update(assigns, %{assigns: %{task: task}} = socket) do
-    changeset = Tasks.change_task(task)
+  def update(%{task: task} = assigns, socket) do
+    changeset = Tasks.change_task(task, %{company_id: task.company_id})
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:selected_users, assigns.selected_users)
      |> assign_form(changeset)}
+  end
+
+  @impl true
+  def update(%{selected_users: selected_users}, socket) do
+    {:ok,
+     socket
+     |> assign(:selected_users, selected_users)}
   end
 
   @impl true
@@ -67,14 +83,15 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
+  @impl true
   def handle_event("save", %{"task" => task_params}, socket) do
-    save_task(socket, socket.assigns.action, task_params)
+    save_task(socket, socket.assigns.action, Map.put(task_params, "user_ids", Enum.filter(socket.assigns.selected_users, & &1.selected) |> Enum.map(& &1.id)))
   end
 
   defp save_task(socket, :new_company_task, task_params) do
     case Tasks.create_preloaded_task(task_params) do
       {:ok, task} ->
-        notify_parent({:saved, task})
+        Phoenix.PubSub.broadcast(CompanyCommander.PubSub, "company#{task.company_id}", {:saved, task})
 
         {:noreply,
          socket
@@ -87,9 +104,9 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
   end
 
   defp save_task(socket, :edit, task_params) do
-    case Tasks.update_task(socket.assigns.task, task_params) do
+    case Tasks.update_task_and_preload(socket.assigns.task, task_params) do
       {:ok, task} ->
-        notify_parent({:saved, task})
+        Phoenix.PubSub.broadcast(CompanyCommander.PubSub, "company#{task.company_id}", {:saved, task})
 
         {:noreply,
          socket
@@ -101,24 +118,14 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
     end
   end
 
-  defp save_task(socket, :new, task_params) do
-    case Tasks.create_task(task_params) do
-      {:ok, task} ->
-        notify_parent({:saved, task})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Task created successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
-    end
-  end
-
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
   end
 
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+  defp update_selected(socket, assigns, selected) do
+    socket
+    |> assign(assigns)
+    |> assign(:selected_users, selected)
+  end
+
 end

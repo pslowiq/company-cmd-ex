@@ -4,7 +4,7 @@ defmodule CompanyCommander.MixProject do
   def project do
     [
       app: :company_commander,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -19,7 +19,7 @@ defmodule CompanyCommander.MixProject do
   def application do
     [
       mod: {CompanyCommander.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :hound]
     ]
   end
 
@@ -52,7 +52,11 @@ defmodule CompanyCommander.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:hound, "~> 1.0.0"},
+      {:poison, "~> 4.0.0"},
+      {:httpoison, "~> 1.8.0"},
+      {:phoenix_multi_select, "~> 0.1"},
     ]
   end
 

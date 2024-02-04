@@ -5,15 +5,19 @@ const plugin = require("tailwindcss/plugin")
 const fs = require("fs")
 const path = require("path")
 
+const colors = require("tailwindcss/colors")
 module.exports = {
   content: [
     "./js/**/*.js",
     "../lib/company_commander_web.ex",
-    "../lib/company_commander_web/**/*.*ex"
+    "../lib/company_commander_web/**/*.*ex",
+    "../deps/phoenix_multi_select/lib/*.ex",
   ],
+  darkMode: 'class', 
   theme: {
     extend: {
       colors: {
+        primary: colors.gray,
         brand: "#232ED1",
       }
     },

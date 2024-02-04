@@ -4,9 +4,13 @@ defmodule CompanyCommander.Companies do
   """
 
   import Ecto.Query, warn: false
+  alias CompanyCommander.Accounts
   alias CompanyCommander.Repo
 
   alias CompanyCommander.Companies.Company
+  alias CompanyCommander.Accounts.User
+  alias Phoenix.LiveView.Components.MultiSelect
+  alias CompanyCommander.Companies.CompanyUser
 
   @doc """
   Returns the list of companies.
@@ -58,9 +62,18 @@ defmodule CompanyCommander.Companies do
   """
   def create_company(attrs \\ %{}) do
     attrs = Map.put(attrs, "details", %{})
-    %Company{}
+    case %Company{}
     |> Company.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert() do
+      {:ok, company} ->
+        for user_id <- attrs["user_ids"] do
+          %CompanyUser{}
+          |> CompanyUser.changeset(%{company_id: company.id, user_id: user_id})
+          |> Repo.insert()
+        end
+        {:ok, company}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -76,9 +89,19 @@ defmodule CompanyCommander.Companies do
 
   """
   def update_company(%Company{} = company, attrs) do
-    company
+    case company
     |> Company.changeset(attrs)
-    |> Repo.update()
+    |> Repo.update() do
+      {:ok, company} ->
+        delete_company_users(company.id)
+        for user_id <- attrs["user_ids"] do
+          %CompanyUser{}
+          |> CompanyUser.changeset(%{company_id: company.id, user_id: user_id})
+          |> Repo.insert()
+        end
+        {:ok, company}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -94,6 +117,14 @@ defmodule CompanyCommander.Companies do
 
   """
   def delete_company(%Company{} = company) do
+    delete_company_users(company.id)
+    # delete all tasks for company
+    query = from(t in CompanyCommander.Tasks.Task,
+      where: t.company_id == ^company.id,
+      select: t)
+    query
+    |> Repo.all()
+    |> Enum.each(&Repo.delete(&1))
     Repo.delete(company)
   end
 
@@ -110,7 +141,6 @@ defmodule CompanyCommander.Companies do
     Company.changeset(company, attrs)
   end
 
-  alias CompanyCommander.Companies.CompanyUser
 
   @doc """
   Returns the list of company_users.
@@ -190,6 +220,15 @@ defmodule CompanyCommander.Companies do
     |> Repo.update()
   end
 
+  def delete_company_users(company_id) do
+    query = from(cu in CompanyUser,
+      where: cu.company_id == ^company_id,
+      select: cu)
+    query
+    |> Repo.all()
+    |> Enum.each(&Repo.delete(&1))
+  end
+
   @doc """
   Deletes a company_user.
 
@@ -228,6 +267,39 @@ defmodule CompanyCommander.Companies do
 
     query
     |> Repo.all()
+  end
+
+  def get_users_for_company(company_id) do
+    query = from(u in User,
+      join: cu in CompanyUser, on: cu.user_id == u.id,
+      where: cu.company_id == ^company_id,
+      select: u)
+
+    ret = query
+    |> Repo.all()
+    ret
+  end
+
+  def make_user_options_for_company(company_id) do
+    all_users = Accounts.list_users()
+    company_users_user_ids = get_users_for_company(company_id)
+    |> Enum.map(& &1.id)
+    Enum.map(all_users, fn user ->
+      selected = user.id in company_users_user_ids
+      %{id: user.id, label: user.name, selected: selected}
+    end)
+  end
+
+  def make_user_options_for_new_company() do
+    all_users = Accounts.list_users()
+    Enum.map(all_users, fn user ->
+      %{id: user.id, label: user.name, selected: false}
+    end)
+  end
+
+  def make_user_options_for_new_company_task(company_id) do
+    get_users_for_company(company_id)
+    |> Enum.map(fn user -> %{id: user.id, label: user.name, selected: false} end)
   end
 
 end

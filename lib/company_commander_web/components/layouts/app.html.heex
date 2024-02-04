@@ -1,7 +1,7 @@
-<header class="flex w-full px-4 sm:px-6 lg:px-8">
+<header class="fixed flex bg-zinc-100 w-full px-4 sm:px-6 lg:px-8">
   <div class="flex flex-col justify-between border-b border-zinc-100 py-3 text-sm">
     <div class="flex items-center gap-4">
-      <a href="/">
+      <a href={~p"/"}>
         <img src={~p"/images/logo.svg"} width="36" />
       </a>
       <p class="text-brand font-semibold leading-6">
@@ -53,8 +53,9 @@
       <% end %>
     </ul>
   </div>
+
 </header>
-<main class="px-4 py-8 sm:px-6 lg:px-8">
+<main class="px-4 py-8 sm:px-6 lg:px-8 pt-32">
   <div class="mx-auto max-w-6xl">
     <.flash_group flash={@flash} />
     <%= @inner_content %>

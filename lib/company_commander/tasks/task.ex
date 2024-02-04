@@ -16,9 +16,8 @@ defmodule CompanyCommander.Tasks.Task do
   @doc false
 
   def changeset(task, attrs) do
-    cs = task
+    task
     |> cast(attrs, [:name, :description, :finished, :company_id])
     |> validate_required([:name, :finished, :company_id])
-    cs
   end
 end

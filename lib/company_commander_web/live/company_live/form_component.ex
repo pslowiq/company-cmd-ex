@@ -23,6 +23,16 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
         <.input field={@form[:address]} type="text" label="Address" />
         <.input field={@form[:contact_info]} type="text" label="Contact info" />
         <.input field={@form[:domain]} type="text" label="Domain" />
+        <.multi_select
+          id="multi-select-component"
+          form={@form}
+          on_change= {fn selected -> send_update(self(), @myself, %{selected_users: selected}) end}
+          wrap={false}
+          placeholder="Select users..."
+          title="Select tipics to filter quotes"
+          options={@selected_users}
+          class="w-full"
+        />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Company</.button>
@@ -39,7 +49,15 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:selected_users, assigns.selected_users)
      |> assign_form(changeset)}
+  end
+
+  @impl true
+  def update(%{selected_users: selected_users} = assigns, socket) do
+    {:ok,
+     socket
+     |> assign(:selected_users, assigns.selected_users)}
   end
 
   @impl true
@@ -53,6 +71,7 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
   end
 
   def handle_event("save", %{"company" => company_params}, socket) do
+    company_params = Map.put(company_params, "user_ids", socket.assigns.selected_users |> Enum.filter(& &1.selected)|> Enum.map(& &1.id))
     save_company(socket, socket.assigns.action, company_params)
   end
 
@@ -93,5 +112,4 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
     assign(socket, :form, to_form(changeset))
   end
 
-  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 end

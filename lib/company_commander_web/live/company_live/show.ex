@@ -3,6 +3,8 @@ defmodule CompanyCommanderWeb.CompanyLive.Show do
 
   alias CompanyCommander.Companies
   alias CompanyCommander.Tasks
+  alias CompanyCommander.Tasks.Task
+  alias Phoenix.LiveView.Components.MultiSelect.Option
 
   @impl true
   def mount(_params, session, socket) do
@@ -18,13 +20,16 @@ defmodule CompanyCommanderWeb.CompanyLive.Show do
 
   @impl true
   def handle_params(%{"company_id" => company_id}, _, socket) do
+    Phoenix.PubSub.subscribe(CompanyCommander.PubSub, "company#{company_id}")
     with company <- Companies.get_company!(company_id),
           tasks <- Tasks.get_tasks_for_company(company.id) do
         {:noreply,
           socket
           |> assign(:company, company)
           |> assign(:page_title, page_title(socket.assigns.live_action))
-          |> stream(:tasks, tasks)}
+          |> stream(:tasks, tasks)
+          |> assign(:company_user_options, Companies.make_user_options_for_company(company_id))
+          |> assign(:task_user_options, Companies.make_user_options_for_new_company_task(company_id))}
       else
         {:error, _} ->
           {:noreply, redirect(socket, to: ~p"/")}
@@ -32,7 +37,7 @@ defmodule CompanyCommanderWeb.CompanyLive.Show do
   end
 
   @impl true
-  def handle_info({CompanyCommanderWeb.TaskLive.FormComponent, {:saved, task}}, socket) do
+  def handle_info({:saved, %Task{} = task}, socket) do
     {:noreply, stream_insert(socket, :tasks, task)}
   end
 
