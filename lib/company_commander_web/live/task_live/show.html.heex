@@ -1,6 +1,6 @@
 <.header>
-  Task <%= @task.id %>
-  <:subtitle>This is a task record from your database.</:subtitle>
+  <%= @company.name %> - Task - <%= @task.name %>
+  <:subtitle>This is a task for <%= @company.name %>.</:subtitle>
   <:actions>
     <.link patch={~p"/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit task</.button>
@@ -12,9 +12,16 @@
   <:item title="Name"><%= @task.name %></:item>
   <:item title="Finished"><%= @task.finished %></:item>
   <:item title="Description"><%= @task.description %></:item>
+  <:item title="Belongs to"><%= @company.name %></:item>
+  <:item title="Assigned users">
+    <%= for user <- @task.users do %>
+      <div><%= user.email %></div>
+    <% end %>
+  </:item>
 </.list>
 <.header class="pt-8">
   Time Logs
+  <:subtitle>Time log records for the current task.</:subtitle>
   <:actions>
       <%= if @current_user_tracks_time do %>
         <.button_stop phx-click="time_tracking">
@@ -33,8 +40,8 @@
   row_click={fn {_id, time_log} -> JS.navigate(~p"/tasks/#{time_log.task_id}/show/edit/#{time_log.id}") end}
 >
   <:col :let={{_id, time_log}} label="User"><%= time_log.user_id %></:col>
-  <:col :let={{_id, time_log}} label="Start Time"><%= time_log.start_time %></:col>
-  <:col :let={{_id, time_log}} label="End Time"><%= time_log.end_time %></:col>
+  <:col :let={{_id, time_log}} label="Start Time"><%= format_datetime(time_log.start_time) %></:col>
+  <:col :let={{_id, time_log}} label="End Time"><%= format_datetime(time_log.end_time) %></:col>
 </.table>
 
 <.back navigate={~p"/companies/#{@task.company_id}"}>Back to <%= @company.name %> </.back>

@@ -57,6 +57,7 @@ defmodule CompanyCommander.MixProject do
       {:poison, "~> 4.0.0"},
       {:httpoison, "~> 1.8.0"},
       {:phoenix_multi_select, "~> 0.1"},
+      {:faker, "~> 0.17", only: :test}
     ]
   end
 

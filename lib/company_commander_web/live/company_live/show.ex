@@ -20,7 +20,7 @@ defmodule CompanyCommanderWeb.CompanyLive.Show do
   @impl true
   def handle_params(%{"company_id" => company_id}, _, socket) do
     Phoenix.PubSub.subscribe(CompanyCommander.PubSub, "company#{company_id}")
-    with company <- Companies.get_company!(company_id),
+    with company <- Companies.get_preloaded_company!(company_id),
           tasks <- Tasks.get_tasks_for_company(company.id) do
         {:noreply,
           socket

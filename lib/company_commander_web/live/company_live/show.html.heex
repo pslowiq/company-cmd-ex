@@ -1,5 +1,5 @@
 <.header>
-  Company <%= @company.id %>
+  <%= @company.name %>
   <:subtitle>This is a company record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"/companies/#{@company}/show/edit"} phx-click={JS.push_focus()}>
@@ -18,10 +18,16 @@
       <div><%= detail_name %>: <%= detail_value %></div>
     <% end %>
   </:item>
+  <:item title="Assigned users">
+    <%= for user <- @company.users do %>
+      <div> <%= user.email %> </div>
+    <% end %>
+  </:item>
 </.list>
 
 <.header class="pt-8">
   Tasks
+  <:subtitle>List of task for the current company.</:subtitle>
   <:actions>
     <.link patch={~p"/companies/#{@company}/new_company_task"} phx-click={JS.push_focus()}>
       <.button>New task</.button>

@@ -66,7 +66,7 @@ defmodule CompanyCommanderWeb.TaskLive.Show do
   defp page_title(:edit_time_log), do: "Edit Time Log"
 
   defp default_assigns(socket, task_id) do
-    task = Tasks.get_task!(task_id)
+    task = Tasks.get_preloaded_task!(task_id)
     company = Companies.get_company!(task.company_id)
     socket
     |> assign(:page_title, page_title(socket.assigns.live_action))
@@ -76,5 +76,11 @@ defmodule CompanyCommanderWeb.TaskLive.Show do
     |> assign(:current_user_tracks_time, Tasks.check_if_user_is_tracking_time(task.id, socket.assigns.current_user.id) )
     |> assign(:user_options, Tasks.make_user_options_for_task(task.id, company.id))
 
+  end
+  def format_datetime(datetime) do
+      case is_nil(datetime) do
+        true -> ""
+        false -> DateTime.to_string(datetime)
+      end
   end
 end

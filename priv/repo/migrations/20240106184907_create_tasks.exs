@@ -6,7 +6,7 @@ defmodule CompanyCommander.Repo.Migrations.CreateTasks do
       add :name, :string
       add :description, :text
       add :finished, :boolean, default: false, null: false
-      add :company_id, references(:companies, on_delete: :nothing)
+      add :company_id, references(:companies, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

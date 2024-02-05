@@ -23,6 +23,8 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
         <.input field={@form[:address]} type="text" label="Address" />
         <.input field={@form[:contact_info]} type="text" label="Contact info" />
         <.input field={@form[:domain]} type="text" label="Domain" />
+
+        <.label>Assign users</.label>
         <.multi_select
           id="multi-select-component"
           form={@form}
@@ -31,7 +33,7 @@ defmodule CompanyCommanderWeb.CompanyLive.FormComponent do
           placeholder="Select users..."
           title="Select tipics to filter quotes"
           options={@selected_users}
-          class="w-full"
+          class="w-full !mt-[0.125rem]"
         />
 
         <:actions>

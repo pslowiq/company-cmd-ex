@@ -8,6 +8,7 @@ defmodule CompanyCommanderWeb.UserAuth do
   alias CompanyCommander.Companies
   alias CompanyCommander.Tasks
 
+  
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
   # the token expiry itself in UserToken.
@@ -182,7 +183,7 @@ defmodule CompanyCommanderWeb.UserAuth do
       {:cont, socket}
     else
       if socket.assigns.current_user do
-        if Companies.auth_company_for_user(company_id, socket.assigns.current_user.id) do
+        if Companies.auth_user_for_company(company_id, socket.assigns.current_user.id) do
           {:cont, socket}
         else
           socket =

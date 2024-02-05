@@ -474,6 +474,8 @@ defmodule CompanyCommanderWeb.CoreComponents do
         <h1 class="text-xl font-semibold leading-8 text-zinc-800">
           <%= render_slot(@inner_block) %>
         </h1>
+        <div class="h-[3px] w-full bg-brand">
+        </div>
         <p :if={@subtitle != []} class="mt-2 text-base leading-6 text-zinc-600">
           <%= render_slot(@subtitle) %>
         </p>
@@ -531,7 +533,7 @@ defmodule CompanyCommanderWeb.CoreComponents do
       <table class="w-[40rem] mt-11 sm:w-full">
         <thead class="text-base text-left leading-6 text-zinc-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal"><%= col[:label] %></th>
+            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-bold"><%= col[:label] %></th>
             <th :if={@action != []} class="relative p-0 pb-4">
               <span class="sr-only"><%= gettext("Actions") %></span>
             </th>
@@ -592,7 +594,7 @@ defmodule CompanyCommanderWeb.CoreComponents do
     <div class="mt-14">
       <dl class="-my-4 divide-y divide-zinc-100">
         <div :for={item <- @item} class="flex gap-4 py-4 text-base leading-6 sm:gap-8">
-          <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
+          <dt class="w-1/4 flex-none text-zinc-500 font-bold"><%= item.title %></dt>
           <dd class="text-zinc-700"><%= render_slot(item) %></dd>
         </div>
       </dl>

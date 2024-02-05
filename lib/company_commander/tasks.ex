@@ -38,6 +38,8 @@
 
     """
     def get_task!(id), do: Repo.get!(Task, id)
+    def get_preloaded_task!(id), do: Repo.get!(Task, id) |> Repo.preload(:users)
+
 
     @doc """
     Creates a task.

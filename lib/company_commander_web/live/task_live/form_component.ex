@@ -24,19 +24,21 @@ defmodule CompanyCommanderWeb.TaskLive.FormComponent do
         <.input field={@form[:description]} type="textarea" label="Description" />
         <.input field={@form[:finished]} type="checkbox" label="Is finished?" />
         <.input field={@form[:company_id]} type="hidden"/>
-        <:actions>
-          <.button phx-disable-with="Saving...">Save Task</.button>
-        </:actions>
+
+        <.label>Assign users</.label>
         <.multi_select
           id="multi-select-component"
           form={@form}
           on_change= {fn selected -> send_update(self(), @myself, %{selected_users: selected}) end}
           wrap={false}
-          placeholder="Select users..."
+          placeholder="Assign users to the task..."
           title="Select tipics to filter quotes"
           options={@selected_users}
-          class="w-full"
+          class="w-full !mt-[0.125rem]"
         />
+        <:actions>
+          <.button phx-disable-with="Saving...">Save Task</.button>
+        </:actions>
       </.simple_form>
     </div>
     """

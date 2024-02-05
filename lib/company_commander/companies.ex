@@ -42,6 +42,13 @@ defmodule CompanyCommander.Companies do
     Repo.get!(Company, id)
   end
 
+  def get_preloaded_company!(id) do
+    Repo.get!(Company, id)
+    |> Repo.preload(
+      [:users, :tasks]
+    )
+  end
+
 
   def get_company_with_tasks!(id) do
     Repo.get!(Company, id) |> Repo.preload(:tasks)
@@ -116,6 +123,7 @@ defmodule CompanyCommander.Companies do
 
   """
   def delete_company(%Company{} = company) do
+    IO.inspect("Gowno")
     delete_company_users(company.id)
     # delete all tasks for company
     query = from(t in CompanyCommander.Tasks.Task,
@@ -176,7 +184,7 @@ defmodule CompanyCommander.Companies do
     query
     |> Repo.one()
   end
-  def auth_company_for_user(company_id, user_id) do
+  def auth_user_for_company(company_id, user_id) do
     case get_company_user(company_id, user_id) do
       %CompanyUser{} -> true
       nil -> false

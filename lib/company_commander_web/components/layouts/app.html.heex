@@ -10,18 +10,18 @@
       <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
         v<%= Application.spec(:company_commander, :vsn) %>
       </p>
-      <%= if @current_user do %>
-        <%= if @current_user.role === "admin" do %>
-          <p class="bg-black/5 text-black rounded-full px-2 font-extrabold leading-6">
-            ADMIN
-          </p>
-        <% end %>
-      <% end %>
     </div>
   </div>
   <div class="flex justify-center">
     <ul class="relative z-10 flex items-center gap-4 py-2 justify-center">
       <%= if @current_user do %>
+        <%= if @current_user.role === "admin" do %>
+          <li>
+          <p class="bg-black/5 text-black rounded-full px-2 font-extrabold leading-6">
+            ADMIN
+          </p>
+        </li>
+        <% end %>
         <li class="text-base leading-6 text-zinc-900">
           <%= @current_user.email %>
         </li>
@@ -64,7 +64,7 @@
   </div>
 </header>
 <main class="px-4 py-8 sm:px-6 lg:px-8 pt-32">
-  <div class="mx-auto max-w-6xl">
+  <div class="mx-auto max-w-7xl">
     <.flash_group flash={@flash} />
     <%= @inner_content %>
   </div>
